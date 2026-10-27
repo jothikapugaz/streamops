@@ -23,15 +23,15 @@ StreamOps is a portfolio learning project inspired by internal tools used to man
 
 ```mermaid
 flowchart TD
-    U[User in browser] --> H[HTML and CSS interface]
-    H --> J[Vanilla JavaScript]
-    J -->|GET and POST| T[/titles API]
-    J -->|GET POST and PUT| I[/incidents API]
-    T --> D[(PostgreSQL)]
+    U["User in browser"] --> H["HTML and CSS interface"]
+    H --> J["Vanilla JavaScript"]
+    J -->|"GET and POST"| T["Titles API"]
+    J -->|"GET, POST and PUT"| I["Incidents API"]
+    T --> D[("PostgreSQL database")]
     I --> D
-    M[SQL migrations and seed data] --> D
-    J --> L[Learning lab]
-    J --> S[Simulated service health]
+    M["SQL migrations and seed data"] --> D
+    J --> L["Learning lab"]
+    J --> S["Simulated service health"]
 ```
 
 The browser renders the interface and sends requests to API handlers. The handlers validate incoming data and use parameterized SQL queries to read or update PostgreSQL. The service-health panel is educational sample content and does not monitor a production system.
