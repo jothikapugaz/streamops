@@ -88,7 +88,7 @@ The hosted preview URL may require access or change as the project evolves.
 
 ## Learning roadmap
 
-- [ ] Add automated API tests for valid, invalid, and not-found requests.
+- [x] Add automated validation tests for valid and invalid title/incident inputs.
 - [ ] Add consistent server-side error handling and structured logs.
 - [ ] Add pagination and stronger search/filter behavior.
 - [ ] Create a conventional local-development setup independent of Hatchable.
