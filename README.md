@@ -6,6 +6,23 @@ A full-stack learning project for managing a fictional streaming catalogue and t
 
 > **Project scope:** This is an independent educational demo, not a real streaming service. Catalogue and incident records persist in PostgreSQL. Service-health values, charts, and trend indicators are illustrative sample data—not live monitoring or production telemetry.
 
+## Screenshots
+
+The screenshots below show the application running locally. Add your genuine PNG screenshots to `docs/screenshots/` using these exact filenames:
+
+### Overview
+![StreamOps overview dashboard](docs/screenshots/01-overview.png)
+
+### Content catalogue
+![StreamOps content catalogue](docs/screenshots/02-catalogue.png)
+
+### Incident tracker
+![StreamOps incident management](docs/screenshots/03-incidents.png)
+
+### Learning lab
+![StreamOps learning lab](docs/screenshots/04-learning-lab.png)
+
+
 ## What you can do
 
 - **Manage a content catalogue:** browse, search, filter, and add titles.
@@ -139,7 +156,8 @@ These are unit tests—not a repeatable HTTP/database integration suite. Manual 
 streamops/
 ├── api/                     # Hatchable-hosted API handlers
 ├── docs/
-│   └── architecture.md      # Architecture and request flow
+│   ├── architecture.md      # Architecture and request flow
+│   └── screenshots/         # Add the four PNG screenshots here
 ├── lib/
 │   └── validation.js        # Shared validation rules
 ├── migrations/              # PostgreSQL schema migrations
