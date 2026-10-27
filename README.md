@@ -49,6 +49,10 @@ streamops/
 │   ├── incidents.js
 │   └── incidents/
 │       └── [id].js
+├── lib/
+│   └── validation.js
+├── tests/
+│   └── validation.test.mjs
 ├── migrations/
 │   ├── 001_titles.sql
 │   └── 002_incidents.sql
@@ -67,6 +71,20 @@ streamops/
 | PUT | `/incidents/:id` | Update an incident status |
 
 The API validates required fields and allowed values. Database writes use parameterized queries. The incident update endpoint returns 404 if the requested incident does not exist.
+
+## Automated validation tests
+
+The shared validation rules used by the API handlers have repeatable tests in `tests/validation.test.mjs`. They cover valid inputs, defaults, whitespace trimming, missing required fields, unsupported values, maximum lengths, and incident status updates.
+
+These are **unit tests for validation logic**. They complement—but do not replace—the live API/database checks for HTTP status codes, persistence, and not-found behavior.
+
+Requirements: Node.js 20+ (Node.js 22 recommended). From the repository root, run:
+
+```bash
+node --experimental-default-type=module --test tests/validation.test.mjs
+```
+
+The flag lets Node load the shared `.js` file as an ES module without changing Hatchable's project configuration. A successful run prints a summary showing the number of passing tests.
 
 ## Database
 
