@@ -1,23 +1,25 @@
 # StreamOps — Streaming Engineering Console
 
-StreamOps is a portfolio learning project inspired by internal tools used to manage content records, track incidents, and understand service reliability.
+StreamOps is an independent full-stack portfolio project inspired by internal tools used to manage content records, track incidents, and learn service reliability concepts.
 
 > **Learning/demo project:** titles and incidents are fictional. Availability, latency, error rates, charts, and dashboard trends are illustrative values—not live telemetry from a real streaming platform.
 
 ## Features
 
-- **Content catalogue:** list, search, and filter fictional titles; add titles with validated fields.
-- **Incident tracker:** search/filter incidents, create incidents, and move them through Open → Investigating → Resolved.
-- **Service health:** explore sample availability, p95 latency, and error-rate indicators.
-- **Learning lab:** explanations, diagrams, code snippets, and quick checks for architecture, APIs, databases, incident lifecycles, and testing.
-- **PostgreSQL persistence:** schema migrations and sample records for titles and incidents.
+- Content catalogue: list, search, filter, and add fictional titles.
+- Incident tracker: search/filter incidents, create incidents, and move them through Open → Investigating → Resolved.
+- PostgreSQL persistence through a standalone Node.js API.
+- Service-health dashboard with clearly labelled simulated metrics.
+- Learning lab with explanations, diagrams, code examples, and quick checks.
+- Shared validation rules and automated unit tests.
 
 ## Technology
 
-- HTML and CSS
-- Vanilla JavaScript for rendering, filtering, forms, and HTTP requests
-- PostgreSQL
-- Hatchable-hosted API handlers using the platform-provided `db` client from `hatchable`
+- HTML, CSS, and vanilla JavaScript
+- Node.js and Express
+- PostgreSQL and the `pg` database driver
+- Node.js built-in test runner
+- Hatchable remains an optional hosted version; the repository now also contains a conventional local server.
 
 ## Architecture
 
@@ -25,16 +27,15 @@ StreamOps is a portfolio learning project inspired by internal tools used to man
 flowchart TD
     U["User in browser"] --> H["HTML and CSS interface"]
     H --> J["Vanilla JavaScript"]
-    J -->|"GET and POST"| T["Titles API"]
-    J -->|"GET, POST and PUT"| I["Incidents API"]
-    T --> D[("PostgreSQL database")]
-    I --> D
-    M["SQL migrations and seed data"] --> D
+    J -->|"HTTP requests"| E["Express API"]
+    E --> V["Shared validation rules"]
+    E --> P[("PostgreSQL database")]
+    M["SQL migrations and sample seed"] --> P
     J --> L["Learning lab"]
     J --> S["Simulated service health"]
 ```
 
-The browser renders the interface and sends requests to API handlers. The handlers validate incoming data and use parameterized SQL queries to read or update PostgreSQL. The service-health panel is educational sample content and does not monitor a production system.
+The browser sends HTTP requests to Express. The server validates submitted data, runs parameterized SQL queries, and returns JSON. PostgreSQL stores titles and incidents. The service-health panel is educational sample content and does not monitor a production system.
 
 ## Project structure
 
@@ -44,75 +45,128 @@ streamops/
 │   ├── index.html
 │   ├── styles.css
 │   └── app.js
-├── api/
-│   ├── titles.js
-│   ├── incidents.js
-│   └── incidents/
-│       └── [id].js
+├── api/                         # Hatchable-hosted API handlers
 ├── lib/
-│   └── validation.js
-├── tests/
-│   └── validation.test.mjs
+│   └── validation.js            # Shared validation logic
+├── scripts/
+│   ├── migrate.js               # Applies each SQL migration once
+│   └── seed.js                  # Seeds only an empty demo database
 ├── migrations/
 │   ├── 001_titles.sql
 │   └── 002_incidents.sql
+├── tests/
+│   └── validation.test.mjs
+├── server.js                    # Standalone Express + PostgreSQL API
+├── package.json
+├── .env.example
 ├── seed.sql
 └── README.md
 ```
 
+## Run locally (Windows)
+
+### 1. Install prerequisites
+
+Install **Node.js 20 or newer** and **PostgreSQL 13 or newer**. During PostgreSQL setup, remember the password you set for the `postgres` database user. You can use pgAdmin, which is included with many PostgreSQL installers, to create and manage the local database.
+
+### 2. Create the database
+
+Open pgAdmin, connect to your local PostgreSQL server, open the Query Tool, and run:
+
+```sql
+CREATE DATABASE streamops;
+```
+
+If a database named `streamops` already exists, do not create it again.
+
+### 3. Configure the connection
+
+From the repository root in PowerShell, run:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open the new `.env` file and replace `your_password` in `DATABASE_URL` with the password for your local PostgreSQL user. Keep `.env` private; it is ignored by Git. If your password contains URL-special characters, URL-encode those characters in the connection URL.
+
+### 4. Install dependencies and prepare the database
+
+Run these commands from the project folder:
+
+```powershell
+npm install
+npm run db:migrate
+npm run db:seed
+```
+
+The migration command creates the tables and records which migrations have already run, so rerunning it will not reapply them. The seed command adds fictional starter records only when both tables are empty; it stops rather than risking duplicate sample data.
+
+### 5. Start StreamOps
+
+```powershell
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000). To check the backend and database connection, open [http://localhost:3000/api/health](http://localhost:3000/api/health); a healthy response looks like:
+
+```json
+{"status":"ok","database":"connected"}
+```
+
+Keep the terminal running while using the app. Press `Ctrl+C` in that terminal to stop the server. For development with automatic server restarts, use `npm run dev`.
+
+### Troubleshooting
+
+- **Database connection refused:** make sure the PostgreSQL service is running and the port/user/password in `.env` are correct.
+- **Password authentication failed:** check the password for the PostgreSQL user and update `DATABASE_URL`.
+- **Relation does not exist:** run `npm run db:migrate`.
+- **Port 3000 is in use:** change `PORT=3000` in `.env` to another free port, then restart the server.
+
 ## API overview
+
+All standalone API routes are prefixed with `/api`.
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET | `/titles` | List catalogue titles |
-| POST | `/titles` | Validate and create a title |
-| GET | `/incidents` | List incidents, prioritizing unresolved/high-severity records |
-| POST | `/incidents` | Validate and create an incident |
-| PUT | `/incidents/:id` | Update an incident status |
+| GET | `/api/health` | Check the API and database connection |
+| GET | `/api/titles` | List catalogue titles |
+| POST | `/api/titles` | Validate and create a title |
+| GET | `/api/incidents` | List incidents, prioritizing unresolved/high-severity records |
+| POST | `/api/incidents` | Validate and create an incident |
+| PUT | `/api/incidents/:id` | Update an incident status |
 
-The API validates required fields and allowed values. Database writes use parameterized queries. The incident update endpoint returns 404 if the requested incident does not exist.
+The API validates required fields and allowed values. Database writes use parameterized queries. The incident update endpoint returns 404 if the requested incident does not exist, and unexpected server errors return a generic response while details are logged in the terminal.
 
-## Automated validation tests
+## Automated tests
 
-The shared validation rules used by the API handlers have repeatable tests in `tests/validation.test.mjs`. They cover valid inputs, defaults, whitespace trimming, missing required fields, unsupported values, maximum lengths, and incident status updates.
+### Unit tests
 
-These are **unit tests for validation logic**. They complement—but do not replace—the live API/database checks for HTTP status codes, persistence, and not-found behavior.
+The nine tests in `tests/validation.test.mjs` test shared validation logic: valid inputs, defaults, whitespace trimming, missing required fields, unsupported values, length limits, and incident status updates.
 
-Requirements: Node.js 20+ (Node.js 22 recommended). From the repository root, run:
+Run them with:
 
-```bash
-node --experimental-default-type=module --test tests/validation.test.mjs
+```powershell
+npm test
 ```
 
-The flag lets Node load the shared `.js` file as an ES module without changing Hatchable's project configuration. A successful run prints a summary showing the number of passing tests.
+These are **unit tests**, not API/database integration tests. Earlier live API checks were performed separately. A repeatable integration-test suite that exercises HTTP requests and PostgreSQL against the standalone server is still a planned next testing improvement.
 
-## Database
+## Hosted Hatchable version
 
-- `titles`: title, type, genre, region, availability, release date, and creation timestamp.
-- `incidents`: title, affected service, severity, status, description, reported timestamp, and updated timestamp.
+The project also retains the original `api/` handlers for the Hatchable-hosted version. Those files import the platform-provided `db` client from `hatchable` and are not intended to run directly in a generic Node.js server. The standalone `server.js` uses Express and the standard PostgreSQL driver instead. Both versions share `lib/validation.js`.
 
-Apply the SQL files in `migrations/` in numerical order, then run `seed.sql` to insert fictional starter records. The seed script is intended for a fresh/demo database; running it repeatedly may create duplicate sample records.
-
-## Run and deployment notes
-
-The current frontend and API handlers target **Hatchable**. Because the API code imports `db` from `hatchable`, it is **not a standalone Node.js backend** and cannot run unchanged in a generic local Node server.
-
-1. Open the [StreamOps Hatchable project](https://hatchable.com/console/projects/streamops-streaming-y8c2).
-2. Use the configured Hatchable runtime and PostgreSQL database for the hosted version.
-3. Apply the migrations and seed data in that environment if needed.
-4. To run outside Hatchable, adapt the API layer and database configuration to a conventional Node.js server and PostgreSQL client. This is a future improvement, not a capability claimed by the repository yet.
-
-The hosted preview URL may require access or change as the project evolves.
+The Hatchable project is available at [the StreamOps console](https://hatchable.com/console/projects/streamops-streaming-y8c2). Its visibility and access settings are controlled separately from this public GitHub repository.
 
 ## Learning roadmap
 
-- [x] Add automated validation tests for valid and invalid title/incident inputs.
-- [ ] Add consistent server-side error handling and structured logs.
+- [x] Add shared validation functions and repeatable unit tests.
+- [x] Add a conventional Node.js/Express backend and PostgreSQL connection.
+- [x] Add a migration runner and guarded demo seed script.
+- [ ] Add repeatable API/database integration tests.
 - [ ] Add pagination and stronger search/filter behavior.
-- [ ] Create a conventional local-development setup independent of Hatchable.
-- [ ] Connect a real telemetry source or keep all service-health values labelled as mock data.
 - [ ] Check accessibility and keyboard interactions.
 - [ ] Add current screenshots of the working interface.
+- [ ] Polish the portfolio presentation and explain the design decisions.
 
 ## Why I built it
 
