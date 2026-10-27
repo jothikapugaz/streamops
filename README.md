@@ -140,15 +140,49 @@ The API checks required fields and supported values. Database writes use paramet
 
 ## Tests
 
-Run the automated unit tests:
+### Unit tests
+
+Run the nine fast unit tests for shared validation rules:
 
 ```powershell
 npm test
 ```
 
-The current suite contains **nine unit tests** covering shared validation behavior, including valid inputs, defaults, whitespace trimming, required fields, unsupported values, length limits, and incident status updates.
+### API/database integration tests
 
-These are unit tests—not a repeatable HTTP/database integration suite. Manual local verification has also confirmed that the dashboard loads, catalogue and incident changes work, records persist after refresh, and the unit tests pass. API/database integration tests remain a planned improvement.
+The integration suite starts the real Express app on an ephemeral local port and sends HTTP requests to it while using a dedicated PostgreSQL database. It checks database connectivity, title creation and persistence, validation failures, incident creation and status updates, and expected HTTP status codes.
+
+**Safety first:** use a separate database named `streamops_test`. The test suite refuses to run unless `STREAMOPS_TEST_DATABASE_URL` points to a database whose name ends in `_test` or `-test`. Never point it at your normal development or production database.
+
+1. Create the test database once in pgAdmin:
+
+   ```sql
+   CREATE DATABASE streamops_test;
+   ```
+
+2. Add a test connection to your local `.env` file (use your own PostgreSQL password):
+
+   ```dotenv
+   STREAMOPS_TEST_DATABASE_URL=postgresql://postgres:your_password@localhost:5432/streamops_test
+   ```
+
+3. Apply the migrations to the **test database**, not the normal `streamops` database. In PowerShell:
+
+   ```powershell
+   $env:DATABASE_URL = "postgresql://postgres:your_password@localhost:5432/streamops_test"
+   npm run db:migrate
+   Remove-Item Env:DATABASE_URL
+   ```
+
+4. Run the integration tests:
+
+   ```powershell
+   npm run test:integration
+   ```
+
+The suite creates uniquely named test records and removes those records afterward. The GitHub Actions workflow provisions a disposable PostgreSQL service and runs migrations, unit tests, and integration tests automatically on pushes and pull requests.
+
+Integration tests exercise actual HTTP requests and SQL queries; they are distinct from the unit tests.
 
 ## Repository structure
 
@@ -187,7 +221,7 @@ streamops/
 
 ## Current limitations and next steps
 
-- [ ] Add repeatable HTTP/database integration tests.
+- [x] Add repeatable HTTP/database integration tests.
 - [ ] Add genuine screenshots of the locally running application.
 - [ ] Improve accessibility and keyboard interaction checks.
 - [ ] Consider pagination and stronger server-side search/filtering.
