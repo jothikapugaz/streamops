@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="StreamOps is a learning project for streaming content operations, incident management, and service health.">
+  <title>StreamOps · Engineering Console</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="StreamOps home">
+        <span class="brand-mark">S</span><span>stream<span class="brand-light">ops</span><small>ENGINEERING CONSOLE</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">◫</span> Overview</button>
+        <button class="nav-item" data-view="catalog"><span class="nav-icon">▤</span> Content catalogue <span class="nav-count" id="catalog-nav-count">—</span></button>
+        <button class="nav-item" data-view="incidents"><span class="nav-icon">⌁</span> Incident tracker <span class="nav-count alert-count" id="incident-nav-count">—</span></button>
+        <button class="nav-item" data-view="services"><span class="nav-icon">◉</span> Service health</button>
+        <button class="nav-item" data-view="learning"><span class="nav-icon">⌘</span> Learning lab <span class="new-tag">LEARN</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-status"><span class="status-dot"></span><span><strong>Demo environment</strong><small>Sample operational data</small></span></div>
+        <div class="user-chip"><div class="avatar">JP</div><div><strong>Project workspace</strong><small>Portfolio build · v1</small></div><span class="more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-sep">/</span><strong id="breadcrumb-current">Overview</strong></div>
+        <div class="top-actions"><span class="environment-pill"><i></i> DEVELOPMENT</span><button class="icon-button" id="help-button" aria-label="Open project guide">?</button><div class="avatar top-avatar">JP</div></div>
+      </header>
+
+      <section class="view active-view" id="view-overview">
+        <div class="page-heading">
+          <div><div class="eyebrow">MONDAY, 27 OCTOBER · DEMO WORKSPACE</div><h1>Good morning, Engineer <span class="wave">✳</span></h1><p class="subtitle">Here’s what’s happening across your streaming platform today.</p></div>
+          <button class="primary-button" id="quick-incident"><span>＋</span> Log an incident</button>
+        </div>
+        <div class="notice"><span class="notice-icon">i</span><div><strong>Learning project, real architecture</strong><p>Numbers are demo data until the catalogue and incident APIs are connected. We’ll wire up the database in our next build step.</p></div><button id="dismiss-notice" aria-label="Dismiss notice">×</button></div>
+        <div class="metrics-grid">
+          <article class="metric-card"><div class="metric-top"><span>Titles in catalogue</span><span class="metric-icon purple">▤</span></div><div class="metric-value" id="metric-titles">128</div><div class="metric-foot"><span class="trend positive">↗ 8.4%</span><span>vs. last month</span></div><div class="sparkline spark-purple"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Open incidents</span><span class="metric-icon orange">⌁</span></div><div class="metric-value" id="metric-open">4</div><div class="metric-foot"><span class="trend negative">2 high priority</span><span>need attention</span></div><div class="sparkline spark-orange"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Platform availability</span><span class="metric-icon green">◉</span></div><div class="metric-value">99.95<span class="value-unit">%</span></div><div class="metric-foot"><span class="trend positive">● All systems nominal</span></div><div class="availability-track"><span></span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>Playback success</span><span class="metric-icon blue">▷</span></div><div class="metric-value">98.7<span class="value-unit">%</span></div><div class="metric-foot"><span class="trend positive">↗ 0.3%</span><span>last 24 hours</span></div><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel wide-panel"><div class="panel-heading"><div><h2>Recent incidents</h2><p>Issues that may need engineering attention</p></div><button class="text-button" data-goto="incidents">View all incidents ↗</button></div><div class="table-wrap"><table><thead><tr><th>INCIDENT</th><th>SERVICE</th><th>SEVERITY</th><th>STATUS</th><th>UPDATED</th></tr></thead><tbody id="overview-incidents"><tr><td colspan="5" class="empty-cell">Loading incident data…</td></tr></tbody></table></div></section>
+          <section class="panel"><div class="panel-heading"><div><h2>Service health</h2><p>Last 24 hours · simulated metrics</p></div><button class="more-button" data-goto="services">···</button></div><div class="service-list" id="overview-services"></div><button class="secondary-button full-button" data-goto="services">Explore service health</button></section>
+        </div>
+        <section class="panel activity-panel"><div class="panel-heading"><div><h2>Build your engineering skills</h2><p>Understand the system, not just the code</p></div><span class="learning-badge">YOUR LEARNING PATH</span></div><div class="learning-cards"><button class="learning-card" data-lesson="architecture"><span class="lesson-number">01</span><span class="lesson-icon">⌘</span><strong>System architecture</strong><small>How frontend, API, and database work together</small><span class="lesson-link">Start lesson →</span></button><button class="learning-card" data-lesson="api"><span class="lesson-number">02</span><span class="lesson-icon">⇄</span><strong>REST APIs</strong><small>How the browser talks to the server</small><span class="lesson-link">Start lesson →</span></button><button class="learning-card" data-lesson="database"><span class="lesson-number">03</span><span class="lesson-icon">▤</span><strong>Database design</strong><small>Tables, relationships, and SQL queries</small><span class="lesson-link">Start lesson →</span></button></div></section>
+      </section>
+
+      <section class="view" id="view-catalog">
+        <div class="page-heading"><div><div class="eyebrow">CONTENT OPERATIONS</div><h1>Content catalogue</h1><p class="subtitle">Manage the titles available on your streaming platform.</p></div><button class="primary-button" id="add-title"><span>＋</span> Add title</button></div>
+        <div class="toolbar"><div class="search-box"><span>⌕</span><input id="catalog-search" type="search" placeholder="Search titles, genres…" aria-label="Search catalogue"></div><select id="catalog-filter" aria-label="Filter by availability"><option value="all">All availability</option><option value="Available">Available</option><option value="Coming Soon">Coming soon</option><option value="Under Review">Under review</option></select><span class="result-count" id="catalog-count">Loading titles…</span></div>
+        <section class="panel"><div class="table-wrap"><table><thead><tr><th>TITLE</th><th>TYPE</th><th>GENRE</th><th>REGION</th><th>AVAILABILITY</th><th>RELEASE DATE</th></tr></thead><tbody id="catalog-table"><tr><td colspan="6" class="empty-cell">Connecting to catalogue…</td></tr></tbody></table></div></section>
+        <p class="helper-note">Learning note: in a real platform, availability can depend on licensing windows and country-specific rights. Our demo keeps this intentionally simple.</p>
+      </section>
+
+      <section class="view" id="view-incidents">
+        <div class="page-heading"><div><div class="eyebrow">RELIABILITY ENGINEERING</div><h1>Incident tracker</h1><p class="subtitle">Capture, prioritize, and resolve platform issues.</p></div><button class="primary-button" id="add-incident"><span>＋</span> Create incident</button></div>
+        <div class="incident-summary" id="incident-summary"></div>
+        <div class="toolbar"><div class="search-box"><span>⌕</span><input id="incident-search" type="search" placeholder="Search incidents…" aria-label="Search incidents"></div><select id="incident-status-filter" aria-label="Filter by status"><option value="all">All statuses</option><option value="Open">Open</option><option value="Investigating">Investigating</option><option value="Resolved">Resolved</option></select><select id="incident-severity-filter" aria-label="Filter by severity"><option value="all">All severities</option><option value="Critical">Critical</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select></div>
+        <section class="panel"><div class="table-wrap"><table><thead><tr><th>INCIDENT</th><th>SERVICE</th><th>SEVERITY</th><th>STATUS</th><th>REPORTED</th><th>ACTION</th></tr></thead><tbody id="incident-table"><tr><td colspan="6" class="empty-cell">Connecting to incident service…</td></tr></tbody></table></div></section>
+      </section>
+
+      <section class="view" id="view-services">
+        <div class="page-heading"><div><div class="eyebrow">OBSERVABILITY</div><h1>Service health</h1><p class="subtitle">Understand the signals engineers use to keep a platform reliable.</p></div><span class="environment-pill"><i></i> SIMULATED TELEMETRY</span></div>
+        <div class="notice"><span class="notice-icon">i</span><div><strong>What is observability?</strong><p>In production, services emit metrics, logs, and traces. This screen uses sample values to help you learn the concepts; it is not monitoring a real system.</p></div></div>
+        <div class="service-health-grid" id="service-health-grid"></div>
+        <section class="panel"><div class="panel-heading"><div><h2>How to read these signals</h2><p>A quick field guide for a junior engineer</p></div></div><div class="signal-grid"><div><span class="signal-mark blue-mark">M</span><strong>Metrics</strong><p>Numerical measurements over time, such as request latency or error rate.</p></div><div><span class="signal-mark purple-mark">L</span><strong>Logs</strong><p>Timestamped records that describe what happened inside an application.</p></div><div><span class="signal-mark orange-mark">T</span><strong>Traces</strong><p>A request's journey through multiple services, helping locate a slow dependency.</p></div></div></section>
+      </section>
+
+      <section class="view" id="view-learning">
+        <div class="page-heading"><div><div class="eyebrow">YOUR PERSONAL ENGINEERING CLASSROOM</div><h1>Learning lab</h1><p class="subtitle">Real-world analogies, architecture diagrams, and practical mini-exercises.</p></div><span class="learning-badge">MODULE 01 · FOUNDATIONS</span></div>
+        <div class="lesson-layout"><aside class="lesson-menu"><button class="lesson-tab selected" data-lesson-tab="architecture"><span>01</span> System architecture</button><button class="lesson-tab" data-lesson-tab="api"><span>02</span> REST APIs</button><button class="lesson-tab" data-lesson-tab="database"><span>03</span> Database design</button><button class="lesson-tab" data-lesson-tab="incidents"><span>04</span> Incident lifecycle</button><button class="lesson-tab" data-lesson-tab="testing"><span>05</span> Testing pyramid</button></aside><article class="panel lesson-content" id="lesson-content"></article></div>
+      </section>
+
+      <footer class="app-footer"><span>STREAMOPS <span class="footer-dot">●</span> PORTFOLIO PROJECT</span><span>Built to learn. Designed to explain.</span></footer>
+    </main>
+  </div>
+
+  <dialog id="record-dialog" class="record-dialog"><form id="record-form" method="dialog"><div class="dialog-heading"><div><div class="eyebrow" id="dialog-eyebrow">NEW RECORD</div><h2 id="dialog-title">Create record</h2></div><button type="button" class="close-button" id="close-dialog" aria-label="Close dialog">×</button></div><div id="dialog-fields" class="dialog-fields"></div><p class="form-error" id="form-error" role="alert"></p><div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-dialog">Cancel</button><button type="submit" class="primary-button">Save record <span>→</span></button></div></form></dialog>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>
