@@ -11,16 +11,16 @@ A full-stack learning project for managing a fictional streaming catalogue and t
 The screenshots below show the application running locally. Add your genuine PNG screenshots to `docs/screenshots/` using these exact filenames:
 
 ### Overview
-![StreamOps overview dashboard](docs/screenshots/01-overview.png)
+![StreamOps overview dashboard](docs/screenshots/overview.png.png)
 
 ### Content catalogue
-![StreamOps content catalogue](docs/screenshots/02-catalogue.png)
+![StreamOps content catalogue](docs/screenshots/catalogue.png.png)
 
 ### Incident tracker
-![StreamOps incident management](docs/screenshots/03-incidents.png)
+![StreamOps incident management](docs/screenshots/incidents.png.png)
 
 ### Learning lab
-![StreamOps learning lab](docs/screenshots/04-learning-lab.png)
+![StreamOps learning lab](docs/screenshots/learning-lab.png.png)
 
 
 ## What you can do
@@ -157,7 +157,7 @@ streamops/
 ├── api/                     # Hatchable-hosted API handlers
 ├── docs/
 │   ├── architecture.md      # Architecture and request flow
-│   └── screenshots/         # Add the four PNG screenshots here
+│   └── screenshots/         # Genuine application screenshots
 ├── lib/
 │   └── validation.js        # Shared validation rules
 ├── migrations/              # PostgreSQL schema migrations
