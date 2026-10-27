@@ -15,7 +15,7 @@ flowchart TB
     end
 
     subgraph Server["Standalone Node.js process"]
-      HTTP["Express routes<br/>server.js"]
+      HTTP["Express routes<br/>lib/app.js"]
       VALID["Shared validation<br/>lib/validation.js"]
       DRIVER["PostgreSQL driver<br/>pg"]
       HTTP --> VALID
@@ -40,12 +40,12 @@ flowchart TB
 |---|---|
 | `public/index.html`, `styles.css` | Page structure and visual presentation |
 | `public/app.js` | Navigation, rendering, forms, and HTTP requests |
-| `server.js` | Express app, API endpoints, database access, and error handling |
+| `server.js` | Creates the PostgreSQL pool and starts the HTTP server |\n| `lib/app.js` | Express app, API endpoints, database access, and error handling; accepts an injected pool for tests |
 | `lib/validation.js` | Shared, testable validation rules |
 | `migrations/*.sql` | Database schema definitions |
 | `scripts/migrate.js` | Applies each migration once and tracks it |
 | `scripts/seed.js`, `seed.sql` | Adds fictional starter data to an empty application database |
-| `tests/validation.test.mjs` | Unit tests for validation behavior |
+| `tests/validation.test.mjs` | Unit tests for validation behavior |\n| `tests/api.integration.test.mjs` | Starts the app on a temporary port and verifies HTTP responses against a dedicated PostgreSQL test database |
 | `api/*.js` | Separate Hatchable-hosted route handlers |
 
 ## Example request: create a title
@@ -64,4 +64,4 @@ If validation fails, the API returns a client error rather than writing the inva
 - PostgreSQL is the source of truth for catalogue and incident records in the standalone app.
 - The service-health cards, charts, and trend values are static illustrative demo data. They do not come from monitoring, analytics, or a real streaming service.
 - The learning lab is client-side educational content.
-- The nine automated tests are unit tests for validation. A repeatable integration suite that starts the API and exercises real HTTP/database behavior is still planned.
+- The validation suite contains nine unit tests. The integration suite starts the API on a temporary port and checks real HTTP/database behavior against a dedicated database whose name ends in `_test`. GitHub Actions runs both suites against a disposable PostgreSQL service.
