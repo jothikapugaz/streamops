@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:16
@@ -29,13 +29,13 @@ jobs:
       STREAMOPS_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/streamops_test
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Apply database migrations
         run: npm run db:migrate
       - name: Run unit tests
