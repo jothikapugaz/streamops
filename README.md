@@ -8,7 +8,7 @@ A full-stack learning project for managing a fictional streaming catalogue and t
 
 ## Screenshots
 
-The screenshots below show the application running locally. Add your genuine PNG screenshots to `docs/screenshots/` using these exact filenames:
+The screenshots below were captured from the application running locally and are stored in `docs/screenshots/`.
 
 ### Overview
 ![StreamOps overview dashboard](docs/screenshots/overview.png.png)
@@ -29,7 +29,7 @@ The screenshots below show the application running locally. Add your genuine PNG
 - **Track incidents:** create incidents, inspect severity and status, and move work through Open → Investigating → Resolved.
 - **Persist application data:** store titles and incidents in PostgreSQL so records remain after refresh.
 - **Explore engineering concepts:** use the built-in learning lab for architecture, HTTP APIs, database design, incident lifecycles, and testing.
-- **Run automated checks:** execute nine unit tests for shared validation logic.
+- **Run automated checks:** execute nine unit tests and five API/database integration tests.
 
 ## Architecture
 
@@ -150,7 +150,7 @@ npm test
 
 ### API/database integration tests
 
-The integration suite starts the real Express app on an ephemeral local port and sends HTTP requests to it while using a dedicated PostgreSQL database. It checks database connectivity, title creation and persistence, validation failures, incident creation and status updates, and expected HTTP status codes.
+The integration suite starts the real Express app on an ephemeral local port and sends HTTP requests to it while using a dedicated PostgreSQL database. Its five tests check database connectivity, title creation and persistence, validation failures, incident creation and status updates, and expected HTTP status codes.
 
 **Safety first:** use a separate database named `streamops_test`. The test suite refuses to run unless `STREAMOPS_TEST_DATABASE_URL` points to a database whose name ends in `_test` or `-test`. Never point it at your normal development or production database.
 
@@ -203,7 +203,8 @@ streamops/
 │   ├── migrate.js
 │   └── seed.js
 ├── tests/
-│   └── validation.test.mjs
+│   ├── validation.test.mjs
+│   └── api.integration.test.mjs
 ├── server.js                # Standalone Express server
 ├── seed.sql
 ├── .env.example
@@ -222,7 +223,7 @@ streamops/
 ## Current limitations and next steps
 
 - [x] Add repeatable HTTP/database integration tests.
-- [ ] Add genuine screenshots of the locally running application.
+- [x] Add genuine screenshots of the locally running application.
 - [ ] Improve accessibility and keyboard interaction checks.
 - [ ] Consider pagination and stronger server-side search/filtering.
 - [ ] Replace illustrative health metrics with a clearly scoped real telemetry source if the project evolves in that direction.
